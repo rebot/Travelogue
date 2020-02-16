@@ -60,16 +60,18 @@ window.onload = () => {
                     const points = Array.from(segment.getElementsByTagName('trkpt'))
                     // Zet punten op de kaart
                     const pointsSubset = points.filter((e, i) => {
-                        return i % 1000
+                        return (i % 2 == 0)
                     })
                     // Ga verder met de subset
+                    const latlngs = []
                     for (let point of pointsSubset){
                         if ('lat' in point.attributes && 'lon' in point.attributes){
                             const lat = point.getAttribute('lat')
                             const lon = point.getAttribute('lon')
-                            L.marker([lat, lon]).addTo(map)
+                            latlngs.push([lat, lon])
                         }
                     }
+                    L.polyline(latlngs, {color: 'red'}).addTo(map)
                     const lat = points[0].getAttribute('lat')
                     const lon = points[0].getAttribute('lon')
                     map.flyTo([lat, lon])
