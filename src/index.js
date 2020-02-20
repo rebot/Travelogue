@@ -1,6 +1,6 @@
 import {Map, NavigationControl} from 'mapbox-gl'
 import {lineString, lineDistance, point, along} from '@turf/turf'
-import MapboxGLButtonControl from './buttoncontrol'
+import MapboxGLButtonControl from './js/buttoncontrol'
 
 let last_known_scroll_position = 0;
 let end
@@ -15,6 +15,7 @@ function create_fake_scroll() {
 // fakescroll is an element to make the page scrollable
 let fakeScroll = create_fake_scroll()
 let autoScroll = false
+let scrollSpeed = 350
 
 const ctrlPlayPause = new MapboxGLButtonControl({
     className: "mapbox-gl-play_pauze",
@@ -26,7 +27,6 @@ function playPause(event) {
     autoScroll = !autoScroll;
     console.log(autoScroll)
     autoScrollFunc()
-
 }
 
 function autoScrollFunc() {
@@ -81,12 +81,15 @@ window.onload = () => {
     kaart.addEventListener('drop', (e) => {
         preventDefault(e)
 
-
         let dt = e.dataTransfer
         let files = dt.files
 
         for (let file of files) {
-            file.text().then(text => {
+            const reader = new FileReader()
+            const content = reader.readAsText(file, 'utf-8')
+            // Gebruik FileReader ipv File.text() voor browser compatibility
+            reader.addEventListener('loadend', (e) => {
+                const text = e.target.result
                 const parser = new DOMParser()
                 const doc = parser.parseFromString(text, 'application/xml')
                 // Haal alle segmenten op
@@ -115,9 +118,9 @@ window.onload = () => {
                     })
                     const routeLengte = lineDistance(route, options)
                     // set the fake scroll height div
-                    fakeScroll.style.height = ((routeLengte * 1000) + window.innerWidth) + 'px'
+                    fakeScroll.style.height = ((routeLengte * scrollSpeed) + window.innerWidth) + 'px'
                     //set the endpoint
-                    end = ((routeLengte * 1000))
+                    end = ((routeLengte * scrollSpeed))
                     // Maak de huidige marker aan
                     const huidigeLocatie = along(route, 0, options)
                     // Voeg route toe als bron
@@ -164,8 +167,7 @@ window.onload = () => {
                             'text-allow-overlap': false
                         }
                     })
-                    map.addControl(ctrlPlayPause, "bottom-left")
-                    console.log(route)
+                    map.addControl(ctrlPlayPause, 'bottom-left')
                     // Vlieg naar de start van de route
                     map.jumpTo({
                         center: huidigeLocatie.geometry.coordinates,
@@ -174,7 +176,7 @@ window.onload = () => {
 
                     window.onscroll = () => {
                         last_known_scroll_position = window.scrollY
-                        const nieuweLocatie = along(route, last_known_scroll_position / 1000, options)
+                        const nieuweLocatie = along(route, last_known_scroll_position / scrollSpeed, options)
                         map.getSource('point').setData(nieuweLocatie)
                         map.panTo(nieuweLocatie.geometry.coordinates)
                     }

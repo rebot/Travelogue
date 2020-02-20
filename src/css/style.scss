@@ -10,6 +10,9 @@ h1 {
 body {
     padding: 0px;
     margin: 0px;
+    // Voorkom dat er in firefox en chrome een 'elastic bounce' 
+    // optreed wanneer je niet verder kan scrollen
+    overscroll-behavior: none;
 }
 
 #map {
