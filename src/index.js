@@ -1,8 +1,19 @@
 import { Map, NavigationControl } from 'mapbox-gl'
 import { lineString, lineDistance, point, along } from '@turf/turf'
 
-window.onload = () => {
+let last_known_scroll_position = 0;
 
+function create_fake_scroll() {
+    let fakeScroll = document.createElement('div')
+    fakeScroll.className = 'fake-scroll'
+    document.body.appendChild(fakeScroll)
+    return fakeScroll
+}
+
+// fakescroll is an element to make the page scrollable
+let fakeScroll = create_fake_scroll();
+
+window.onload = () => {
     // Instellingen mapbox
     const accessToken = 'pk.eyJ1IjoicmVib3QiLCJhIjoiY2sxMTE2bzNjMDA1ODNlcDU5NHQ3c29oMiJ9.VfDPJP1o62zvc8GzywbRbg'
 
@@ -71,6 +82,7 @@ window.onload = () => {
                         color: '#C62828'
                     })
                     const routeLengte = lineDistance(route, options)
+                    fakeScroll.style.height = ((routeLengte * 1000)+window.innerWidth) + 'px'
                     // Maak de huidige marker aan
                     const huidigeLocatie = along(route, 0, options)
                     // Voeg route toe als bron
@@ -111,8 +123,11 @@ window.onload = () => {
                         'source': 'point',
                         'type': 'symbol',
                         'layout': {
-                            'icon-image': 'bicycle-15'
+                            'icon-image': 'bicycle-15',
+                            'symbol-z-order': 'source'
                         }
+
+
                     })
                     console.log(route)
                     // Vlieg naar de start van de route
@@ -121,26 +136,16 @@ window.onload = () => {
                         essential: true
                     })
                     
-                    let i = 0
-                    let timer = window.setInterval(() => {
-                        if (i < routeLengte) {
-                            const nieuweLocatie = along(route, i, options)
+
+                    window.onscroll = () => {
+                            last_known_scroll_position = window.scrollY
+                            const nieuweLocatie = along(route, last_known_scroll_position / 1000, options)
                             map.getSource('point').setData(nieuweLocatie)
                             map.panTo(nieuweLocatie.geometry.coordinates)
-                            i += 0.1
-                        } else {
-                            window.clearInterval(timer)
                         }
-                    }, 10)
                 }
             })
-
             console.log(`Name: ${file.name} - ${file.size}`)
         }
     })
-
-/*     window.onscroll = () => {
-
-    } */
-
 }
