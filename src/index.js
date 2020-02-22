@@ -1,6 +1,9 @@
 import {Map, NavigationControl} from 'mapbox-gl'
 import {lineString, lineDistance, point, along} from '@turf/turf'
 import MapboxGLButtonControl from './js/buttoncontrol'
+import { s3bucket } from './js/services/aws'
+
+import { aws } from './js/config'
 
 let last_known_scroll_position = 0;
 let end
@@ -182,6 +185,24 @@ window.onload = () => {
                     }
                 }
             })
+
+            const params = {
+                Key: file.name,
+                ContentType: file.type,
+                Body: file,
+                ACL: 'public-read',
+            }
+
+            const fileUploaded = s3bucket.putObject(params).promise()
+
+            console.log(aws)
+
+            fileUploaded.then((data) => {
+                console.log('success', data)
+            }).catch((err) => {
+                console.log(err)
+            })
+
             console.log(`Name: ${file.name} - ${file.size}`)
         }
     })

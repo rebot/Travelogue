@@ -13,6 +13,12 @@ body {
     // Voorkom dat er in firefox en chrome een 'elastic bounce' 
     // optreed wanneer je niet verder kan scrollen
     overscroll-behavior: none;
+    // Verberg de scrollbar in webkit browsers
+    &::-webkit-scrollbar{
+        display: none;
+    }
+    // Verberg de scrollbar in Edge
+    -ms-overflow-style: none;
 }
 
 #map {
