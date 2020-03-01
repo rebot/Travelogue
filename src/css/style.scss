@@ -28,14 +28,14 @@ body {
     overflow-y: scroll;
 }
 
-.fake-scroll {
+.scroll-dummy {
   position: absolute;
   top: 0;
   width: 1px;
 }
 
 
-.mapbox-gl-play_pauze {
+.mapbox-gl-button-control {
   width: 20px;
   background-repeat: no-repeat;
   background-position: center;

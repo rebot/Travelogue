@@ -12,12 +12,15 @@
     "watch:css": "npx node-sass src/css/style.scss -w dist/style.css",
     "build": "yarn run -s build:js && yarn run -s build:css",
     "build:js": "npx browserify src/index.js -t babelify -t localenvify -o dist/bundle.js",
-    "build:css": "npx node-sass src/css/style.scss dist/style.css"
+    "build:css": "npx node-sass src/css/style.scss dist/style.css",
+    "cleanup": "npx standard --fix"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
+    "babel-eslint": "^10.1.0",
+    "babel-polyfill": "^6.26.0",
     "babelify": "^10.0.0",
     "browserify": "^16.5.0",
     "localenvify": "^1.0.1",
@@ -25,6 +28,7 @@
     "npm-run-all": "^4.1.5",
     "npx": "^10.2.2",
     "reload": "^3.0.4",
+    "standard": "^14.3.1",
     "watchify": "^3.11.1"
   },
   "dependencies": {
@@ -42,10 +46,24 @@
         "babelify",
         {
           "presets": [
-            "@babel/preset-env"
+            ["@babel/preset-env", {
+              "targets": {
+                "browsers": [
+                  "last 2 versions",
+                  "IE >= 9"
+                ]
+              }
+            }]
           ]
         }
       ]
     ]
+  },
+  "standard": {
+    "plugins": [
+      "html"
+    ],
+    "globals": [],
+    "parser": "babel-eslint"
   }
 }
