@@ -5,6 +5,33 @@ const password = process.env.WAYLAY_SECRET
 
 const handler = async function (event) {
   try {
+
+    const method = event.headers['content-type']
+
+    if (method.includes('multipart/form-data')){
+      // Strip last 2 characters
+      const binary = event.body.slice(0, event.body.length - 2)
+      // Multiple file upload - Parse formdata
+      const match = method.match(/boundary=(.*)/) 
+      const boundary = match[1]
+
+      const boundaryRegex = new RegExp(`--${boundary}\r?\n(.*?)${boundary}`, 's')
+      const binaryFileList = binary.match(boundaryRegex)
+
+      binaryFileList.shift()
+
+      for (const bin of binaryFileList){
+        // Splits de multipart in een header en de binary
+        console.log(bin.slice(0, 1000))
+        const { header, file } = bin.split()
+      }
+
+      console.log(binaryFileList.length)
+      
+    } else {
+      // Individual file upload
+    }
+
     const body = JSON.parse(event.body)
     const { fileName, fileType } = body
 

@@ -4,7 +4,7 @@ const username = process.env.WAYLAY_CLIENT
 const password = process.env.WAYLAY_SECRET
 
 const handler = async function (event) {
-  const { filename } = JSON.parse(event.body)
+  const { filename } = event.queryStringParameters
   try {
     const response = await fetch('https://api-io.waylay.io/storage/v1/bucket/assets/traveloque/GPX/' + filename + '?sign=GET', {
       headers: {
