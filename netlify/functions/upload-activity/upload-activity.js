@@ -27,13 +27,19 @@ const handler = async function (event) {
       // upload photos in gpx name folder
     }
 
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        fileName, fileType
+      })
+    }
   } catch (error) {
     // output to netlify function log
     console.log(error)
     return {
       statusCode: 500,
       // Could be a custom message or object i.e. JSON.stringify(err)
-      body: JSON.stringify({ msg: error.message }),
+      body: JSON.stringify({ msg: error.message })
     }
   }
 }
