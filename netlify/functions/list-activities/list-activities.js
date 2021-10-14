@@ -25,7 +25,7 @@ const handler = async function () {
 
     return {
       statusCode: 200,
-      body: files
+      body: JSON.stringify(files)
     }
   } catch (error) {
     // output to netlify function log
@@ -38,5 +38,4 @@ const handler = async function () {
   }
 }
 
-handler()
 module.exports = { handler }

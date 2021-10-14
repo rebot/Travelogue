@@ -34,6 +34,4 @@ const handler = async function (filename) {
   }
 }
 
-handler('KOM_hunting_w_Mr_Scharnweber.gpx')
-
 module.exports = { handler }
