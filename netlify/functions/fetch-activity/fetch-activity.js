@@ -3,7 +3,8 @@ const fetch = require('node-fetch')
 const username = process.env.WAYLAY_CLIENT
 const password = process.env.WAYLAY_SECRET
 
-const handler = async function (filename) {
+const handler = async function (event) {
+  const { filename } = JSON.parse(event.body)
   try {
     const response = await fetch('https://api-io.waylay.io/storage/v1/bucket/assets/traveloque/GPX/' + filename + '?sign=GET', {
       headers: {
